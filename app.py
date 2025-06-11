@@ -1,36 +1,94 @@
+import io
+import tempfile
+import numpy as np
 import streamlit as st
+import librosa, librosa.display
+import matplotlib.pyplot as plt
+import noisereduce as nr
+import soundfile as sf
+from pydub import AudioSegment 
 
 st.set_page_config(page_title="AudioVive", page_icon="🎵", layout="centered")
 
 st.markdown(
     """
-    <style>
+     <style>
     .stApp {
         background-color: #f0fffe;
     }
     </style>
-    """,
-    unsafe_allow_html=True
-)
-
-st.markdown(
-    """
     <h1 style='text-align: center; color: #3853ff;'>၊၊||၊</h1>
     <h1 style='text-align: center; color: #1a1a1a;'>AudioVive</h1>
     <h3 style='text-align: center; font-weight: 400; color: #333;'>Where old audio finds new life</h3>
     """,
     unsafe_allow_html=True
+
+    # Upload .wav file
+    MAX_MB = 50           # limit for optimal performance
+    MAX_BYTES = MAX_MB * 1024 * 1024
+    
+    file = st.file_uploader(f"Upload a .wav file (≤ {MAX_MB} MB recommended)",
+                            type=["wav"])
+
 )
 
-# Upload .wav file
-audio_file = st.file_uploader("Upload your audio file (.wav, max 10MB)", type=["wav"])
+# ---------- FUNCTIONS ----------
+def plot_spectrogram(y, sr, title: str):
+    """Return a Matplotlib figure of a dB-scaled spectrogram."""
+    fig, ax = plt.subplots()
+    S = librosa.amplitude_to_db(np.abs(librosa.stft(y)), ref=np.max)
+    img = librosa.display.specshow(S, sr=sr, x_axis="time", y_axis="hz", ax=ax)
+    ax.set_title(title)
+    ax.set_xlabel("Time (s)")
+    ax.set_ylabel("Frequency (Hz)")
+    fig.colorbar(img, ax=ax, format="%+2.0f dB")
+    st.pyplot(fig)
 
-# Max file size: 10MB
-MAX_SIZE = 10 * 1024 * 1024  # 10 MB in bytes
+def reduce_noise(y, sr):
+    """Simple broadband noise reduction:
+       use the first 0.5 s as noise profile."""
+    noise_clip = y[: int(0.5 * sr)]
+    return nr.reduce_noise(y=y, sr=sr, y_noise=noise_clip, prop_decrease=1.0)
 
-if audio_file is not None:
-    if audio_file.size > MAX_SIZE:
-        st.error("⚠️ File too large. Please upload a .wav file under 10MB.")
-    else:
-        st.success("✅ File uploaded successfully!")
-        st.audio(audio_file, format="audio/wav")
+def wav_to_mp3(y, sr):
+    """Convert NumPy float32 mono audio to MP3 bytes."""
+    # Float -> int16 for pydub
+    y16 = np.int16(y / np.max(np.abs(y)) * 32767)
+    wav_buf = io.BytesIO()
+    sf.write(wav_buf, y16, sr, subtype="PCM_16")
+    wav_buf.seek(0)
+
+    segment = AudioSegment.from_file(wav_buf, format="wav")
+    mp3_buf = io.BytesIO()
+    segment.export(mp3_buf, format="mp3", bitrate="192k")
+    mp3_buf.seek(0)
+    return mp3_buf
+
+# ---------- PROCESSING ----------
+if file is not None:
+    if file.size > MAX_BYTES:
+        size_mb = file.size / (1024 * 1024)
+        st.warning(f"⚠️ File is {size_mb:.2f} MB. "
+                   f> {MAX_MB} MB may slow processing or timeout.")
+    st.audio(file, format="audio/wav", start_time=0)
+
+    # Clean-up button
+    if st.button("🚀 Clean up audio"):
+        with st.spinner("Processing…"):
+            y, sr = librosa.load(file, sr=None, mono=True)
+            y_clean = reduce_noise(y, sr)
+
+            st.subheader("🔍 Spectrogram Comparison")
+            col1, col2 = st.columns(2)
+            with col1:
+                plot_spectrogram(y, sr, "Original (Noisy)")
+            with col2:
+                plot_spectrogram(y_clean, sr, "Cleaned")
+
+            # Convert to MP3 and offer download
+            mp3_buf = wav_to_mp3(y_clean, sr)
+            st.success("Done! Download your cleaned audio below ⬇️")
+            st.download_button("💾 Download MP3",
+                               data=mp3_buf,
+                               file_name="audio_cleaned.mp3",
+                               mime="audio/mpeg")
