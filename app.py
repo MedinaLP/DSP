@@ -7,10 +7,10 @@ st.markdown(
     """
     <style>
     body {
-        background-color: #dbefff; /* Pale sky blue */
+        background-color: ##b3e0ff; /* Pale sky blue */
     }
     .main {
-        background-color: #dbefff;
+        background-color: ##b3e0ff;
     }
     </style>
     """,
