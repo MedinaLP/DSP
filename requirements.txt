@@ -1,1 +1,6 @@
-streamlit
+streamlit>=1.33
+librosa>=0.10
+soundfile>=0.12
+noisereduce>=3.0
+pydub>=0.25      # MP3 export (needs ffmpeg installed)
+matplotlib>=3.8
