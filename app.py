@@ -104,5 +104,5 @@ if uploaded_file:
                     plot_spectrogram_interactive(y_clean, sr, "Cleaned")
 
             mp3_buf = wav_to_mp3(y_clean, sr)
-            st.success("💾 Download your cleaned audio below \u2b07\ufe0f")
-            st.download_button("\ud83d\udce5 Download MP3", data=mp3_buf, file_name="audio_cleaned.mp3", mime="audio/mpeg")
+            st.success("🎧 Audio Cleaned!")
+            st.download_button("💾 Download MP3", data=mp3_buf, file_name="audio_cleaned.mp3", mime="audio/mpeg")
