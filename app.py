@@ -25,27 +25,16 @@ st.markdown(
     unsafe_allow_html=True
 )
 
+# ---------- SETTINGS ----------
+MAX_MB = 50
+MAX_BYTES = MAX_MB * 1024 * 1024
+
+uploaded_file = st.file_uploader(
+    f"Upload a .wav or .mp3 file (\u2264 {MAX_MB} MB recommended)",
+    type=["wav", "mp3"]
+)
+
 # ---------- FUNCTIONS ----------
-
-def plot_spectrogram(y, sr, title: str):
-    fig, ax = plt.subplots()
-    S = librosa.amplitude_to_db(np.abs(librosa.stft(y)), ref=np.max)
-    img = librosa.display.specshow(S, sr=sr, x_axis="time", y_axis="hz", ax=ax)
-    ax.set_title(title)
-    ax.set_xlabel("Time (s)")
-    ax.set_ylabel("Frequency (Hz)")
-    fig.colorbar(img, ax=ax, format="%+2.0f dB")
-    st.pyplot(fig)
-
-def plot_waveform(y, sr, title: str):
-    fig, ax = plt.subplots()
-    times = np.arange(len(y)) / sr
-    ax.plot(times, y, color='blue')
-    ax.set_title(title)
-    ax.set_xlabel("Time (s)")
-    ax.set_ylabel("Amplitude")
-    st.pyplot(fig)
-
 def reduce_noise(y, sr):
     noise_clip = y[: int(0.5 * sr)]
     return nr.reduce_noise(y=y, sr=sr, y_noise=noise_clip, prop_decrease=1.0)
@@ -53,7 +42,7 @@ def reduce_noise(y, sr):
 def wav_to_mp3(y, sr):
     y16 = np.int16(y / np.max(np.abs(y)) * 32767)
     wav_buf = io.BytesIO()
-    sf.write(wav_buf, y16, sr, format="WAV", subtype="PCM_16")
+    sf.write(wav_buf, y16, sr, subtype="PCM_16")
     wav_buf.seek(0)
 
     segment = AudioSegment.from_file(wav_buf, format="wav")
@@ -62,62 +51,57 @@ def wav_to_mp3(y, sr):
     mp3_buf.seek(0)
     return mp3_buf
 
-# ---------- MAIN APP ----------
+def plot_waveform(y, sr, title="Waveform"):
+    times = np.arange(len(y)) / sr
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=times, y=y, mode='lines', name='Amplitude'))
+    fig.update_layout(title=title, xaxis_title='Time (s)', yaxis_title='Amplitude')
+    st.plotly_chart(fig, use_container_width=True)
 
-MAX_MB = 50
-MAX_BYTES = MAX_MB * 1024 * 1024
+def plot_spectrogram_interactive(y, sr, title="Spectrogram"):
+    S = librosa.amplitude_to_db(np.abs(librosa.stft(y)), ref=np.max)
+    fig = go.Figure(data=go.Heatmap(z=S, colorscale='Viridis'))
+    fig.update_layout(title=title, xaxis_title='Time', yaxis_title='Frequency (Hz)')
+    st.plotly_chart(fig, use_container_width=True)
 
-uploaded_file = st.file_uploader(
-    f"Upload a .wav or .mp3 file (≤ {MAX_MB} MB recommended)",
-    type=["wav", "mp3"]
-)
-
+# ---------- MAIN LOGIC ----------
 if uploaded_file:
     if uploaded_file.size > MAX_BYTES:
-        st.warning(f"⚠️ File is {uploaded_file.size / (1024 * 1024):.2f} MB. > {MAX_MB} MB may slow processing or timeout.")
+        st.warning(f"\u26a0\ufe0f File is {uploaded_file.size / (1024 * 1024):.2f} MB. > {MAX_MB} MB may slow processing or timeout.")
 
-    if "raw_audio" not in st.session_state:
-        file_ext = uploaded_file.name.split('.')[-1].lower()
+    file_ext = uploaded_file.name.split('.')[-1].lower()
 
-        if file_ext == "mp3":
-            audio = AudioSegment.from_file(uploaded_file, format="mp3")
-            wav_io = io.BytesIO()
-            audio.export(wav_io, format="wav")
-            wav_io.seek(0)
-            y, sr = librosa.load(wav_io, sr=None, mono=True)
-        else:  # wav
-            y, sr = librosa.load(uploaded_file, sr=None, mono=True)
+    if file_ext == "mp3":
+        audio = AudioSegment.from_file(uploaded_file, format="mp3")
+        wav_io = io.BytesIO()
+        audio.export(wav_io, format="wav")
+        wav_io.seek(0)
+        y, sr = librosa.load(wav_io, sr=None, mono=True)
+    else:
+        y, sr = librosa.load(uploaded_file, sr=None, mono=True)
 
-        st.session_state["raw_audio"] = y
-        st.session_state["sr"] = sr
-        st.session_state["cleaned_audio"] = reduce_noise(y, sr)
+    st.audio(uploaded_file, format="audio/wav" if file_ext == "wav" else "audio/mp3")
 
-    st.audio(uploaded_file, format="audio/wav" if uploaded_file.name.endswith(".wav") else "audio/mp3")
-    
-# ---------- Visualization Toggle ----------
-if "raw_audio" in st.session_state and "cleaned_audio" in st.session_state:
-    y = st.session_state["raw_audio"]
-    y_clean = st.session_state["cleaned_audio"]
-    sr = st.session_state["sr"]
+    if st.button("\ud83d\ude80 Clean up audio"):
+        with st.spinner("Processing..."):
+            y_clean = reduce_noise(y, sr)
 
-    st.subheader("🔍 Audio Visualization")
-    view_option = st.radio("Choose audio visualization:", ["Waveform", "Spectrogram"], horizontal=True)
+            st.subheader("\ud83d\udd0d Visual Comparison")
+            view_option = st.radio("Choose visualization:", ["Waveform", "Spectrogram"], horizontal=True)
+            col1, col2 = st.columns(2)
 
-    col1, col2 = st.columns(2)
-    with col1:
-        if view_option == "Waveform":
-            plot_waveform(y, sr, "Original (Noisy)")
-        else:
-            plot_spectrogram(y, sr, "Original (Noisy)")
+            with col1:
+                if view_option == "Waveform":
+                    plot_waveform(y, sr, "Original (Noisy)")
+                else:
+                    plot_spectrogram_interactive(y, sr, "Original (Noisy)")
 
-    with col2:
-        if view_option == "Waveform":
-            plot_waveform(y_clean, sr, "Cleaned")
-        else:
-            plot_spectrogram(y_clean, sr, "Cleaned")
+            with col2:
+                if view_option == "Waveform":
+                    plot_waveform(y_clean, sr, "Cleaned")
+                else:
+                    plot_spectrogram_interactive(y_clean, sr, "Cleaned")
 
-    # ---------- Cleaned Audio Download ----------
-    st.markdown("---")
-    st.subheader("🎧 Download Cleaned Audio")
-    mp3_buf = wav_to_mp3(y_clean, sr)
-    st.download_button("💾 Download MP3", data=mp3_buf, file_name="audio_cleaned.mp3", mime="audio/mpeg")
+            mp3_buf = wav_to_mp3(y_clean, sr)
+            st.success("💾 Download your cleaned audio below \u2b07\ufe0f")
+            st.download_button("\ud83d\udce5 Download MP3", data=mp3_buf, file_name="audio_cleaned.mp3", mime="audio/mpeg")
