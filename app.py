@@ -86,7 +86,7 @@ if uploaded_file:
         with st.spinner("Processing..."):
             y_clean = reduce_noise(y, sr)
 
-            st.subheader("\ud83d\udd0d Visual Comparison")
+            st.subheader("🔍 Visual Comparison")
             view_option = st.radio("Choose visualization:", ["Waveform", "Spectrogram"], horizontal=True)
             col1, col2 = st.columns(2)
 
