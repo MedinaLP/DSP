@@ -146,7 +146,7 @@ with tabs[2]:
         st.info("Please upload and process an audio file in the '🎧 AudiVive' tab first.")
 
 # ---------- ABOUT TAB ----------
-with tabs[2]:
+with tabs[3]:
     st.markdown("""
     ### 📌 About AudioVive
     Modern digital tools can help restore and improve the quality of older audio recordings, which often have background noise and difficulty in interpretation. This process revitalizes history by restoring sounds with clearer sound, ensuring it remains remembered for future generations.
