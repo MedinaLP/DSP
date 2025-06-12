@@ -170,9 +170,9 @@ with tabs[3]:
     AudioVive is a modern tool designed to restore and enhance the quality of old audio recordings—particularly those affected by background noise, distortion, or low fidelity. By using advanced filtering and noise reduction techniques, our app helps revive historical sounds—from archival speech to vintage music—making them clearer, crisper, and more accessible for future generations.
 
     This project demonstrates how digital platforms like Streamlit and GitHub can be used to:
-    - ✅ Remove persistent hum, hiss, or other noise using intelligent filtering  
-    - ✅ Improve the clarity and quality of archived audio  
-    - ✅ Reconstruct and preserve valuable auditory content using open-source tools
+     ✅ Remove persistent hum, hiss, or other noise using intelligent filtering  
+     ✅ Improve the clarity and quality of archived audio  
+     ✅ Reconstruct and preserve valuable auditory content using open-source tools
 
     ### 👥 About the Creators
     We're a team passionate about technology, preservation, and digital innovation, each contributing unique strengths to make AudioVive a reality:
