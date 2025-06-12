@@ -51,7 +51,12 @@ def convert_mp3_to_wav(mp3_file):
     return wav_buf
 
 # ---------- TABS ----------
+if "tab_index" not in st.session_state:
+    st.session_state["tab_index"] = 0
+
 tabs = st.tabs(["🏠 Home", "🎧 AudiVive", "ℹ️ About"])
+tabs[st.session_state["tab_index"]]
+
 
 # ---------- HOME TAB ----------
 with tabs[0]:
@@ -70,7 +75,8 @@ with tabs[0]:
         unsafe_allow_html=True
     )
     if st.button("🚀 Get Started with AudiVive!"):
-        st.experimental_rerun()
+        st.session_state["tab_index"] = 1
+
 
 # ---------- AUDIOVIVE TAB ----------
 with tabs[1]:
