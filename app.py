@@ -55,7 +55,7 @@ if "tab_index" not in st.session_state:
     st.session_state["tab_index"] = 0
 
 # ---------- TABS ----------
-tabs = st.tabs(["🏠 Home", "🎧 AudiVive", "📊 Visualization", "ℹ️ About"])
+tabs = st.tabs(["🏠 Home", "🎧 AudioVive", "📊 Visualization", "ℹ️ About"])
 
 # ---------- HOME TAB ----------
 with tabs[0]:
@@ -85,6 +85,7 @@ with tabs[0]:
 
 # ---------- AUDIOVIVE TAB ----------
 with tabs[1]:
+    st.header("🎧 Restore your Old Audios with AudioVive!")
     MAX_MB = 50
     MAX_BYTES = MAX_MB * 1024 * 1024
     file = st.file_uploader(f"Upload an audio file (≤ {MAX_MB} MB recommended)", type=["wav", "mp3"])
@@ -120,12 +121,13 @@ with tabs[1]:
 
 # ---------- VISUALIZATION TAB ----------
 with tabs[2]:
+    
     if "raw_audio" in st.session_state and "cleaned_audio" in st.session_state:
         y = st.session_state["raw_audio"]
         y_clean = st.session_state["cleaned_audio"]
         sr = st.session_state["sr"]
 
-        st.subheader("🔍 Audio Visualization")
+        st.header("🔍 Audio Visualization")
         view_option = st.radio("Choose audio visualization:", ["Waveform", "Spectrogram"], horizontal=True)
 
         col1, col2 = st.columns(2)
