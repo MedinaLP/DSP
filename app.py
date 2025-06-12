@@ -68,8 +68,7 @@ def wav_to_mp3(y, sr):
 if file is not None:
     if file.size > MAX_BYTES:
         size_mb = file.size / (1024 * 1024)
-        st.warning(f"⚠️ File is {size_mb:.2f} MB. "
-                   f> {MAX_MB} MB may slow processing or timeout.")
+        st.warning(f"⚠️ File is {size_mb:.2f} MB. > {MAX_MB} MB may slow processing or timeout.")
     st.audio(file, format="audio/wav", start_time=0)
 
     # Clean-up button
