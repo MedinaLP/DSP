@@ -84,11 +84,22 @@ with tabs[0]:
     if st.button("🎶 Get Started with AudioVive!", use_container_width=True):
         st.markdown("---")
         st.markdown("### ❓ How AudioVive Works")
-        st.markdown("1. **Upload your audio file** – AudioVive supports WAV and MP3 files.")
-        st.markdown("2. **Process it with a single click** – AudioVive helps you restore old audios by noise reduction with just one click.")
-        st.markdown("3. **Visualize the result** – Visualize your audio file via Waveforms or Spectrograms with AudioVive.")
-        st.markdown("4. **Download your cleaned MP3** – Export and listen to your restored audio. Easy and Fast with AudioVive")
-        st.success("✨ You're all set! Click the '🎧 AudioVive' tab above to begin.")
+    
+        st.markdown("""
+        1. **Upload your audio file**  
+           Select an audio file in either **WAV** or **MP3** format. Whether it's a vintage voice recording or an old music clip, AudioVive can process it.
+    
+        2. **Restore the sound with a single click**  
+           With just one click, AudioVive removes background hum, hiss, and noise using advanced filtering technology to enhance clarity.
+    
+        3. **Visualize the transformation**  
+           Instantly see the difference between the original and cleaned audio through interactive **Waveform** and **Spectrogram** visualizations.
+    
+        4. **Download the enhanced audio**  
+           Once processed, download your cleaned file as an **MP3**—ready to archive, share, or enjoy.
+    
+        """)
+        st.success("✨ You're all set! Click the '🎧 AudioVive' tab above to begin restoring your audio.")
 
 # ---------- AUDIOVIVE TAB ----------
 with tabs[1]:
