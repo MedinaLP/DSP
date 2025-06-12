@@ -143,7 +143,7 @@ with tabs[2]:
             else:
                 plot_spectrogram(y_clean, sr, "Cleaned")
     else:
-        st.info("Please upload and process an audio file in the '🎧 AudiVive' tab first.")
+        st.info("Please upload and process an audio file in the '🎧 AudioVive' tab first.")
 
 # ---------- ABOUT TAB ----------
 with tabs[3]:
