@@ -57,9 +57,11 @@ def convert_mp3_to_wav(mp3_file):
     return wav_buf
 
 def compute_snr(clean, noise):
-    signal_power = np.mean(clean ** 2)
-    noise_power = np.mean(noise ** 2)
-    snr = 10 * np.log10(signal_power / (noise_power + 1e-10))
+    signal_power = np.sum(clean ** 2)
+    noise_power = np.sum(noise ** 2)
+    if noise_power == 0:
+        return float('inf')  # Perfectly clean
+    return 10 * np.log10(signal_power / noise_power)
     return snr
 
 # ---------- TAB INDEX HANDLING ----------
