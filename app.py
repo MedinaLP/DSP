@@ -95,13 +95,7 @@ with tabs[0]:
 
 # ---------- AUDIOVIVE TAB ----------
 with tabs[1]:
-    st.markdown(
-        """
-        <h1 style='text-align: left; color: #3853ff;'>၊၊||၊ AudioVive</h1>
-        #<h1 style='text-align: left; color: #1a1a1a;'>AudioVive</h1>
-        """,
-        unsafe_allow_html=True
-    )
+    st.header("Restore your audio with AudiVive!")
     
     MAX_MB = 50
     MAX_BYTES = MAX_MB * 1024 * 1024
