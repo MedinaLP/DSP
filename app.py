@@ -124,15 +124,30 @@ with tabs[1]:
         if file.size > MAX_BYTES:
             size_mb = file.size / (1024 * 1024)
             st.warning(f"⚠️ File is {size_mb:.2f} MB. > {MAX_MB} MB may slow processing or timeout.")
+    
+        try:
+            file_bytes = file.read()
+    
+            if file.type == "audio/mpeg":
+                st.info("Converting MP3 to WAV for processing...")
+                file = convert_mp3_to_wav(io.BytesIO(file_bytes))
+            else:
+                file = io.BytesIO(file_bytes)
+    
+            # Try loading
+            try:
+                y, sr = librosa.load(file, sr=None, mono=True)
+            except Exception as e:
+                st.error(f"Failed to load audio: {e}")
+                st.stop()
 
-        file_bytes = file.read()
+        st.session_state["raw_audio"] = y
+        st.session_state["sr"] = sr
+        st.audio(file, format="audio/wav", start_time=0)
 
-        # Convert mp3 to wav if needed
-        if file.type == "audio/mpeg":
-            st.info("Converting MP3 to WAV for processing...")
-            file = convert_mp3_to_wav(io.BytesIO(file_bytes))
-        else:
-            file = io.BytesIO(file_bytes)
+    except Exception as e:
+        st.error(f"🚨 Upload/processing failed: {e}")
+
 
         st.audio(file, format="audio/wav", start_time=0)
 
