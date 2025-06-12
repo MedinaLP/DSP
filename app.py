@@ -58,6 +58,7 @@ if "tab_index" not in st.session_state:
 tabs = st.tabs(["🏠 Home", "🎧 AudiVive", "ℹ️ About"])
 
 # ---------- HOME TAB ----------
+# ---------- HOME TAB ----------
 with tabs[0]:
     st.markdown(
         """
@@ -70,7 +71,7 @@ with tabs[0]:
             margin-top: 2em;
         }
         .center-btn button {
-            background-color: #4CAF50;
+            background-color: #3853ff;
             border: none;
             color: white;
             padding: 15px 32px;
@@ -86,12 +87,18 @@ with tabs[0]:
         <h1 style='text-align: center; color: #1a1a1a;'>AudioVive</h1>
         <h3 style='text-align: center; font-weight: 400; color: #333;'>Where old audio finds new life</h3>
         <p style='text-align: center;'>Clean and enhance noisy or distorted recordings from the past using modern audio technology.</p>
-        <div class='center-btn'>
-            <a href="#🎧-audivive"><button>🚀 Get Started with AudiVive!</button></a>
-        </div>
         """,
         unsafe_allow_html=True
     )
+
+    if st.button("🎶 Get Started with AudiVive!", use_container_width=True):
+        st.markdown("---")
+        st.markdown("### 🧭 How AudiVive Works")
+        st.markdown("1. **Upload your audio file** – support for WAV and MP3.")
+        st.markdown("2. **Process it with a single click** – our tool removes noise.")
+        st.markdown("3. **Visualize the result** – see waveforms and spectrograms.")
+        st.markdown("4. **Download your cleaned MP3** – easy and fast.")
+        st.success("✨ You're all set! Click the '🎧 AudiVive' tab above to begin.")
 
 # ---------- AUDIOVIVE TAB ----------
 with tabs[1]:
