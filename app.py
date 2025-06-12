@@ -27,9 +27,14 @@ def plot_spectrogram(y, sr, title):
     fig.update_layout(title=title, xaxis_title='Time (s)', yaxis_title='Frequency (Hz)')
     st.plotly_chart(fig, use_container_width=True)
 
+def apply_notch_filter(y, sr, freq=60.0, quality=30.0):
+    b, a = iirnotch(freq, quality, sr)
+    return lfilter(b, a, y)
+
 def reduce_noise(y, sr):
-    noise_clip = y[:int(0.5 * sr)]
-    return nr.reduce_noise(y=y, sr=sr, y_noise=noise_clip, prop_decrease=1.0)
+    y_filtered = apply_notch_filter(y, sr)
+    noise_clip = y_filtered[:int(0.5 * sr)]
+    return nr.reduce_noise(y=y_filtered, sr=sr, y_noise=noise_clip, prop_decrease=1.0)
 
 def wav_to_mp3(y, sr):
     y16 = np.int16(y / np.max(np.abs(y)) * 32767)
@@ -50,12 +55,18 @@ def convert_mp3_to_wav(mp3_file):
     wav_buf.seek(0)
     return wav_buf
 
+def compute_snr(clean, noise):
+    signal_power = np.mean(clean ** 2)
+    noise_power = np.mean(noise ** 2)
+    snr = 10 * np.log10(signal_power / (noise_power + 1e-10))
+    return snr
+
 # ---------- TAB INDEX HANDLING ----------
 if "tab_index" not in st.session_state:
     st.session_state["tab_index"] = 0
 
 # ---------- TABS ----------
-tabs = st.tabs(["🏠 Home", "🎧 AudioVive", "📊 Visualization", "ℹ️ About"])
+tabs = st.tabs(["🏠 Home", "🎧 AudioVive", "📊 Visualization", "📈 Evaluation", "ℹ️ About"])
 
 # ---------- HOME TAB ----------
 with tabs[0]:
@@ -160,11 +171,50 @@ with tabs[2]:
                 plot_waveform(y_clean, sr, "Cleaned")
             else:
                 plot_spectrogram(y_clean, sr, "Cleaned")
+
+        noise_est = y - y_clean
+        snr_before = compute_snr(y, noise_est)
+        snr_after = compute_snr(y_clean, noise_est)
+
+        st.subheader("📊 Signal-to-Noise Ratio (SNR)")
+        st.markdown(f"**SNR Before Cleaning:** {snr_before:.2f} dB")
+        st.markdown(f"**SNR After Cleaning:** {snr_after:.2f} dB")
     else:
         st.info("Please upload and process an audio file in the '🎧 AudioVive' tab first.")
 
-# ---------- ABOUT TAB ----------
+# ---------- EVALUATION TAB ----------
 with tabs[3]:
+    st.header("📈 Audio Evaluation with MATLAB Standards")
+    if "raw_audio" in st.session_state and "cleaned_audio" in st.session_state:
+        y = st.session_state["raw_audio"]
+        y_clean = st.session_state["cleaned_audio"]
+        sr = st.session_state["sr"]
+
+        noise_est = y - y_clean
+        snr_before = compute_snr(y, noise_est)
+        snr_after = compute_snr(y_clean, noise_est)
+
+        st.markdown(f"**SNR Before Cleaning:** {snr_before:.2f} dB")
+        st.markdown(f"**SNR After Cleaning:** {snr_after:.2f} dB")
+
+        if snr_after > snr_before:
+            st.success("✅ The noise reduction process was effective.")
+        else:
+            st.warning("⚠️ No significant improvement in SNR. Consider adjusting parameters.")
+
+        st.markdown("""
+        ### 🔬 Evaluation Pipeline Summary:
+        - Audio sample is tested and visualized using waveform and spectrogram.
+        - FFT is used for frequency analysis.
+        - Notch filter is applied at 60 Hz for targeted noise removal.
+        - Spectral subtraction is done frame by frame based on a noise profile.
+        - Signal-to-Noise Ratio (SNR) is calculated to quantify effectiveness.
+        """)
+    else:
+        st.info("Please upload and process an audio file first to evaluate.")
+        
+# ---------- ABOUT TAB ----------
+with tabs[4]:
     st.markdown("""
     ### 📌 About AudioVive
     AudioVive is a modern tool designed to restore and enhance the quality of old audio recordings—particularly those affected by background noise, distortion, or low fidelity. By using advanced filtering and noise reduction techniques, our app helps revive historical sounds—from archival speech to vintage music—making them clearer, crisper, and more accessible for future generations.
