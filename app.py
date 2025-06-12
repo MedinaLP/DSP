@@ -115,9 +115,9 @@ with tabs[1]:
                 y_clean = reduce_noise(y, sr)
                 st.session_state["cleaned_audio"] = y_clean
 
-        mp3_buf = wav_to_mp3(st.session_state.get("cleaned_audio", y), sr)
-        st.success("Done! Download your cleaned audio below ⬇️")
-        st.download_button("💾 Download MP3", use_container_width=True, data=mp3_buf, file_name="audio_cleaned.mp3", mime="audio/mpeg")
+    mp3_buf = wav_to_mp3(st.session_state.get("cleaned_audio", y), sr)
+    st.success("Done! Download your cleaned audio below ⬇️")
+    st.download_button("💾 Download MP3", use_container_width=True, data=mp3_buf, file_name="audio_cleaned.mp3", mime="audio/mpeg")
 
 # ---------- VISUALIZATION TAB ----------
 with tabs[2]:
