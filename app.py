@@ -151,13 +151,13 @@ with tabs[1]:
 
 # ---------- VISUALIZATION TAB ----------
 with tabs[2]:
-    
+    st.header("📊 Graphical Visualizations")
     if "raw_audio" in st.session_state and "cleaned_audio" in st.session_state:
         y = st.session_state["raw_audio"]
         y_clean = st.session_state["cleaned_audio"]
         sr = st.session_state["sr"]
 
-        st.header("🔍 Audio Visualization")
+        st.subheader("Audio Visualization")
         view_option = st.radio("Choose audio visualization:", ["Waveform", "Spectrogram"], horizontal=True)
 
         col1, col2 = st.columns(2)
