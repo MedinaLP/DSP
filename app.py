@@ -74,7 +74,7 @@ with tabs[0]:
         unsafe_allow_html=True
     )
 
-    if st.button("🎶 Get Started with AudiVive!", use_container_width=True):
+    if st.button("🎶 Get Started with AudioVive!", use_container_width=True):
         st.markdown("---")
         st.markdown("### ❓ How AudioVive Works")
         st.markdown("1. **Upload your audio file** – AudioVive supports WAV and MP3 files.")
@@ -88,7 +88,7 @@ with tabs[1]:
     st.header("🎧 Restore your Old Audios with AudioVive!")
     MAX_MB = 50
     MAX_BYTES = MAX_MB * 1024 * 1024
-    file = st.file_uploader(f"Upload an audio file (≤ {MAX_MB} MB recommended)", type=["wav", "mp3"])
+    file = st.file_uploader(f"Upload an audio file (Recommended file size should not exceed {MAX_MB} MB)", type=["wav", "mp3"])
 
     if file is not None:
         if file.size > MAX_BYTES:
