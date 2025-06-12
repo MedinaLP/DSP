@@ -65,22 +65,6 @@ with tabs[0]:
         .stApp {
             background-color: #f0fffe;
         }
-        .center-btn {
-            text-align: center;
-            margin-top: 2em;
-        }
-        .center-btn button {
-            background-color: #3853ff;
-            border: none;
-            color: white;
-            padding: 15px 32px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
         </style>
         <h1 style='text-align: center; color: #3853ff;'>၊၊||၊</h1>
         <h1 style='text-align: center; color: #1a1a1a;'>AudioVive</h1>
@@ -105,7 +89,7 @@ with tabs[1]:
     
     MAX_MB = 50
     MAX_BYTES = MAX_MB * 1024 * 1024
-    file = st.file_uploader(f"Upload an audio file (≤ {MAX_MB} MB recommended)", type=["wav", "mp3"])
+    file = st.file_uploader(f"Upload an audio file (Recommended file size should not exceed {MAX_MB} MB)", type=["wav", "mp3"])
 
     if file is not None:
         if file.size > MAX_BYTES:
@@ -127,7 +111,7 @@ with tabs[1]:
         st.session_state["raw_audio"] = y
         st.session_state["sr"] = sr
 
-        if st.button("🚀 Clean up audio"):
+        if st.button("🚀 Clean up audio", use_container_width=True):
             with st.spinner("Processing…"):
                 y_clean = reduce_noise(y, sr)
                 st.session_state["cleaned_audio"] = y_clean
