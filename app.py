@@ -65,17 +65,22 @@ with tabs[0]:
         .stApp {
             background-color: #f0fffe;
         }
+        .center-btn {
+            display: flex;
+            justify-content: center;
+            margin-top: 2em;
+        }
         </style>
         <h1 style='text-align: center; color: #3853ff;'>၊၊||၊</h1>
         <h1 style='text-align: center; color: #1a1a1a;'>AudioVive</h1>
         <h3 style='text-align: center; font-weight: 400; color: #333;'>Where old audio finds new life</h3>
         <p style='text-align: center;'>Clean and enhance noisy or distorted recordings from the past using modern audio technology.</p>
+        <div class='center-btn'>
+            <button onclick="window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});">🚀 Get Started with AudiVive!</button>
+        </div>
         """,
         unsafe_allow_html=True
     )
-    if st.button("🎶 Get Started with AudiVive!"):
-        st.session_state["tab_index"] = 1
-        st.experimental_rerun()
 
 # ---------- AUDIOVIVE TAB ----------
 with tabs[1]:
