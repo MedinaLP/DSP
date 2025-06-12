@@ -82,7 +82,7 @@ if uploaded_file:
 
     st.audio(uploaded_file, format="audio/wav" if file_ext == "wav" else "audio/mp3")
 
-    if st.button("\ud83d\ude80 Clean up audio"):
+    if st.button("🚀 Clean up audio"):
         with st.spinner("Processing..."):
             y_clean = reduce_noise(y, sr)
 
