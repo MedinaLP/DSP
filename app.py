@@ -66,9 +66,20 @@ with tabs[0]:
             background-color: #f0fffe;
         }
         .center-btn {
-            display: flex;
-            justify-content: center;
+            text-align: center;
             margin-top: 2em;
+        }
+        .center-btn button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
         }
         </style>
         <h1 style='text-align: center; color: #3853ff;'>၊၊||၊</h1>
@@ -76,7 +87,7 @@ with tabs[0]:
         <h3 style='text-align: center; font-weight: 400; color: #333;'>Where old audio finds new life</h3>
         <p style='text-align: center;'>Clean and enhance noisy or distorted recordings from the past using modern audio technology.</p>
         <div class='center-btn'>
-            <button onclick="window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});">🚀 Get Started with AudiVive!</button>
+            <a href="#🎧-audivive"><button>🚀 Get Started with AudiVive!</button></a>
         </div>
         """,
         unsafe_allow_html=True
