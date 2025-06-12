@@ -6,6 +6,9 @@ import matplotlib.pyplot as plt
 import noisereduce as nr
 import soundfile as sf
 from pydub import AudioSegment
+from pydub.utils import which
+AudioSegment.converter = which("ffmpeg")  # Ensure ffmpeg is found
+
 
 st.set_page_config(page_title="AudioVive", page_icon="🎵", layout="centered")
 
