@@ -55,9 +55,8 @@ if "tab_index" not in st.session_state:
     st.session_state["tab_index"] = 0
 
 # ---------- TABS ----------
-tabs = st.tabs(["🏠 Home", "🎧 AudiVive", "ℹ️ About"])
+tabs = st.tabs(["🏠 Home", "🎧 AudioVive", "ℹ️ About"])
 
-# ---------- HOME TAB ----------
 # ---------- HOME TAB ----------
 with tabs[0]:
     st.markdown(
@@ -93,16 +92,16 @@ with tabs[0]:
 
     if st.button("🎶 Get Started with AudiVive!", use_container_width=True):
         st.markdown("---")
-        st.markdown("### 🧭 How AudiVive Works")
-        st.markdown("1. **Upload your audio file** – support for WAV and MP3.")
-        st.markdown("2. **Process it with a single click** – our tool removes noise.")
-        st.markdown("3. **Visualize the result** – see waveforms and spectrograms.")
-        st.markdown("4. **Download your cleaned MP3** – easy and fast.")
-        st.success("✨ You're all set! Click the '🎧 AudiVive' tab above to begin.")
+        st.markdown("### 🧭 How AudioVive Works")
+        st.markdown("1. **Upload your audio file** – AudioVive supports WAV and MP3 files.")
+        st.markdown("2. **Process it with a single click** – AudioVive helps you restore old audios by noise reduction with just one click.")
+        st.markdown("3. **Visualize the result** – Visualize your audio file via Waveforms or Spectrograms with AudioVive.")
+        st.markdown("4. **Download your cleaned MP3** – Export and listen to your restored audio. Easy and Fast with AudioVive")
+        st.success("✨ You're all set! Click the '🎧 AudioVive' tab above to begin.")
 
 # ---------- AUDIOVIVE TAB ----------
 with tabs[1]:
-    st.header("Restore your audio with AudiVive!")
+    st.header("Restore your audio with AudioVive!")
     
     MAX_MB = 50
     MAX_BYTES = MAX_MB * 1024 * 1024
@@ -161,7 +160,7 @@ with tabs[1]:
 # ---------- ABOUT TAB ----------
 with tabs[2]:
     st.markdown("""
-    ### 📌 About AudiVive
+    ### 📌 About AudioVive
     Modern digital tools can help restore and improve the quality of older audio recordings, which often have background noise and difficulty in interpretation. This process revitalizes history by restoring sounds with clearer sound, ensuring it remains remembered for future generations.
 
     ### 👥 About the Creators
