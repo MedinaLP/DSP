@@ -95,6 +95,8 @@ with tabs[0]:
 
 # ---------- AUDIOVIVE TAB ----------
 with tabs[1]:
+    st.header("၊၊||၊ AudioVive")
+    
     MAX_MB = 50
     MAX_BYTES = MAX_MB * 1024 * 1024
     file = st.file_uploader(f"Upload an audio file (≤ {MAX_MB} MB recommended)", type=["wav", "mp3"])
