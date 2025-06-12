@@ -48,13 +48,15 @@ def reduce_noise(y, sr):
 def wav_to_mp3(y, sr):
     y16 = np.int16(y / np.max(np.abs(y)) * 32767)
     wav_buf = io.BytesIO()
-    sf.write(wav_buf, y16, sr, subtype="PCM_16")
+    sf.write(wav_buf, y16, sr, format="WAV", subtype="PCM_16")  # Explicit format
     wav_buf.seek(0)
+    
     segment = AudioSegment.from_file(wav_buf, format="wav")
     mp3_buf = io.BytesIO()
     segment.export(mp3_buf, format="mp3", bitrate="192k")
     mp3_buf.seek(0)
     return mp3_buf
+
 
 # ---------- PROCESSING ----------
 if file is not None:
