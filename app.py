@@ -55,7 +55,7 @@ if "tab_index" not in st.session_state:
     st.session_state["tab_index"] = 0
 
 # ---------- TABS ----------
-tabs = st.tabs(["🏠 Home", "🎧 AudioVive", "ℹ️ About"])
+tabs = st.tabs(["🏠 Home", "🎧 AudiVive", "📊 Visualization", "ℹ️ About"])
 
 # ---------- HOME TAB ----------
 with tabs[0]:
@@ -85,11 +85,9 @@ with tabs[0]:
 
 # ---------- AUDIOVIVE TAB ----------
 with tabs[1]:
-    st.header("Restore your audio with AudioVive!")
-    
     MAX_MB = 50
     MAX_BYTES = MAX_MB * 1024 * 1024
-    file = st.file_uploader(f"Upload an audio file (Recommended file size should not exceed {MAX_MB} MB)", type=["wav", "mp3"])
+    file = st.file_uploader(f"Upload an audio file (≤ {MAX_MB} MB recommended)", type=["wav", "mp3"])
 
     if file is not None:
         if file.size > MAX_BYTES:
@@ -116,6 +114,12 @@ with tabs[1]:
                 y_clean = reduce_noise(y, sr)
                 st.session_state["cleaned_audio"] = y_clean
 
+        mp3_buf = wav_to_mp3(st.session_state.get("cleaned_audio", y), sr)
+        st.success("Done! Download your cleaned audio below ⬇️")
+        st.download_button("💾 Download MP3", use_container_width=True, data=mp3_buf, file_name="audio_cleaned.mp3", mime="audio/mpeg")
+
+# ---------- VISUALIZATION TAB ----------
+with tabs[2]:
     if "raw_audio" in st.session_state and "cleaned_audio" in st.session_state:
         y = st.session_state["raw_audio"]
         y_clean = st.session_state["cleaned_audio"]
@@ -136,10 +140,8 @@ with tabs[1]:
                 plot_waveform(y_clean, sr, "Cleaned")
             else:
                 plot_spectrogram(y_clean, sr, "Cleaned")
-
-        mp3_buf = wav_to_mp3(y_clean, sr)
-        st.success("Done! Download your cleaned audio below ⬇️")
-        st.download_button("💾 Download MP3", use_container_width=True, data=mp3_buf, file_name="audio_cleaned.mp3", mime="audio/mpeg")
+    else:
+        st.info("Please upload and process an audio file in the '🎧 AudiVive' tab first.")
 
 # ---------- ABOUT TAB ----------
 with tabs[2]:
