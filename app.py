@@ -69,7 +69,14 @@ with tabs[0]:
         <h1 style='text-align: center; color: #3853ff;'>၊၊||၊</h1>
         <h1 style='text-align: center; color: #1a1a1a;'>AudioVive</h1>
         <h3 style='text-align: center; font-weight: 400; color: #333;'>Where old audio finds new life</h3>
-        <p style='text-align: center;'>Clean and enhance noisy or distorted recordings from the past using modern audio technology.</p>
+        <p style='text-align: center;'>
+            Clean and enhance noisy or distorted recordings from the past using modern audio technology.
+        </p>
+        <p style='text-align: center;'>
+            AudioVive lets you <strong>hear the past more clearly</strong>. Using intelligent filtering and enhancement tools, 
+            it removes background noise and improves overall audio quality. Whether it’s a cherished voice message or a piece of history, 
+            AudioVive helps you <strong>relive meaningful moments</strong> and preserve them for the future.
+        </p>
         """,
         unsafe_allow_html=True
     )
@@ -149,13 +156,25 @@ with tabs[2]:
 with tabs[3]:
     st.markdown("""
     ### 📌 About AudioVive
-    Modern digital tools can help restore and improve the quality of older audio recordings, which often have background noise and difficulty in interpretation. This process revitalizes history by restoring sounds with clearer sound, ensuring it remains remembered for future generations.
+    AudioVive is a modern tool designed to restore and enhance the quality of old audio recordings—particularly those affected by background noise, distortion, or low fidelity. By using advanced filtering and noise reduction techniques, our app helps revive historical sounds—from archival speech to vintage music—making them clearer, crisper, and more accessible for future generations.
+
+    This project demonstrates how digital platforms like Streamlit and GitHub can be used to:
+    - ✅ Remove persistent hum, hiss, or other noise using intelligent filtering  
+    - ✅ Improve the clarity and quality of archived audio  
+    - ✅ Reconstruct and preserve valuable auditory content using open-source tools
 
     ### 👥 About the Creators
-    **Medina**  
-    **Maestre**  
-    **Malsi**  
-    **Zablan**
+    We're a team passionate about technology, preservation, and digital innovation, each contributing unique strengths to make AudioVive a reality:
 
-    We're a team passionate about technology and preservation — blending digital innovation with heritage restoration.
+    **Medina** – Software Development & Streamlit Integration  
+    Responsible for implementing the app architecture and audio processing pipeline using Python and Streamlit.
+
+    **Maestre** – Data Processing & Audio Enhancement  
+    In charge of handling audio inputs, refining cleaning techniques, and ensuring smooth audio transformations.
+
+    **Malsi** – Documentation & Research  
+    Oversees user flow, writes clear and concise documentation, and contributes to research supporting the app's purpose.
+
+    **Zablan** – UI Design & Project Coordination  
+    Designs the user interface, ensures a visually intuitive experience, and coordinates overall project development and goals.
     """)
