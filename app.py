@@ -7,6 +7,7 @@ import noisereduce as nr
 import soundfile as sf
 from pydub import AudioSegment
 import plotly.graph_objects as go
+from scipy.signal import iirnotch, lfilter
 
 st.set_page_config(page_title="AudioVive", page_icon="🎵", layout="centered")
 
