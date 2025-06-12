@@ -92,7 +92,7 @@ with tabs[0]:
 
     if st.button("🎶 Get Started with AudiVive!", use_container_width=True):
         st.markdown("---")
-        st.markdown("### 🧭 How AudioVive Works")
+        st.markdown("### ❓ How AudioVive Works")
         st.markdown("1. **Upload your audio file** – AudioVive supports WAV and MP3 files.")
         st.markdown("2. **Process it with a single click** – AudioVive helps you restore old audios by noise reduction with just one click.")
         st.markdown("3. **Visualize the result** – Visualize your audio file via Waveforms or Spectrograms with AudioVive.")
