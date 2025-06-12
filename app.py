@@ -124,30 +124,15 @@ with tabs[1]:
         if file.size > MAX_BYTES:
             size_mb = file.size / (1024 * 1024)
             st.warning(f"⚠️ File is {size_mb:.2f} MB. > {MAX_MB} MB may slow processing or timeout.")
-    
-        try:
-            file_bytes = file.read()
-    
-            if file.type == "audio/mpeg":
-                st.info("Converting MP3 to WAV for processing...")
-                file = convert_mp3_to_wav(io.BytesIO(file_bytes))
-            else:
-                file = io.BytesIO(file_bytes)
-    
-            # Try loading
-            try:
-                y, sr = librosa.load(file, sr=None, mono=True)
-            except Exception as e:
-                st.error(f"Failed to load audio: {e}")
-                st.stop()
 
-        st.session_state["raw_audio"] = y
-        st.session_state["sr"] = sr
-        st.audio(file, format="audio/wav", start_time=0)
+        file_bytes = file.read()
 
-    except Exception as e:
-        st.error(f"🚨 Upload/processing failed: {e}")
-
+        # Convert mp3 to wav if needed
+        if file.type == "audio/mpeg":
+            st.info("Converting MP3 to WAV for processing...")
+            file = convert_mp3_to_wav(io.BytesIO(file_bytes))
+        else:
+            file = io.BytesIO(file_bytes)
 
         st.audio(file, format="audio/wav", start_time=0)
 
@@ -163,6 +148,7 @@ with tabs[1]:
                 mp3_buf = wav_to_mp3(st.session_state.get("cleaned_audio", y), sr)
                 st.success("Done! Download your cleaned audio below ⬇️")
                 st.download_button("💾 Download MP3", use_container_width=True, data=mp3_buf, file_name="audio_cleaned.mp3", mime="audio/mpeg")
+
 
 # ---------- VISUALIZATION TAB ----------
 with tabs[2]:
