@@ -139,7 +139,7 @@ with tabs[1]:
 
         mp3_buf = wav_to_mp3(y_clean, sr)
         st.success("Done! Download your cleaned audio below ⬇️")
-        st.download_button("💾 Download MP3", data=mp3_buf, file_name="audio_cleaned.mp3", mime="audio/mpeg")
+        st.download_button("💾 Download MP3", use_container_width=True, data=mp3_buf, file_name="audio_cleaned.mp3", mime="audio/mpeg")
 
 # ---------- ABOUT TAB ----------
 with tabs[2]:
