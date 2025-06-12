@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import noisereduce as nr
 import soundfile as sf
 from pydub import AudioSegment
+import plotly.graph_objects as go
 
 st.set_page_config(page_title="AudioVive", page_icon="🎵", layout="centered")
 
@@ -56,7 +57,22 @@ def wav_to_mp3(y, sr):
     segment.export(mp3_buf, format="mp3", bitrate="192k")
     mp3_buf.seek(0)
     return mp3_buf
+    
+def plot_waveform(y, sr, title="Waveform"):
+    duration = len(y) / sr
+    time = np.linspace(0, duration, len(y))
 
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=time, y=y, mode='lines', line=dict(color='blue')))
+    fig.update_layout(
+        title=title,
+        xaxis_title="Time (s)",
+        yaxis_title="Amplitude",
+        showlegend=False,
+        template="plotly_white",
+        height=300
+    )
+    st.plotly_chart(fig, use_container_width=True)
 
 # ---------- PROCESSING ----------
 if file is not None:
@@ -71,12 +87,26 @@ if file is not None:
             y, sr = librosa.load(file, sr=None, mono=True)
             y_clean = reduce_noise(y, sr)
 
-            st.subheader("🔍 Spectrogram Comparison")
+            st.subheader("🔍 Audio Visualization")
+
+            view_option = st.radio(
+                "Choose audio visualization:",
+                options=["Waveform", "Spectrogram"],
+                horizontal=True,
+            )
+            
             col1, col2 = st.columns(2)
             with col1:
-                plot_spectrogram(y, sr, "Original (Noisy)")
+                if view_option == "Waveform":
+                    plot_waveform(y, sr, "Original (Noisy)")
+                else:
+                    plot_spectrogram(y, sr, "Original (Noisy)")
             with col2:
-                plot_spectrogram(y_clean, sr, "Cleaned")
+                if view_option == "Waveform":
+                    plot_waveform(y_clean, sr, "Cleaned")
+                else:
+                    plot_spectrogram(y_clean, sr, "Cleaned")
+
 
             mp3_buf = wav_to_mp3(y_clean, sr)
             st.success("✅ Done! Download your cleaned audio below ⬇️")
