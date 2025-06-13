@@ -35,7 +35,7 @@ def apply_notch_filter(y, sr, freq=60.0, quality=30.0):
 def reduce_noise(y, sr):
     y_filtered = apply_notch_filter(y, sr)
     noise_clip = y_filtered[:int(0.5 * sr)]
-    return nr.reduce_noise(y=y_filtered, sr=sr, y_noise=noise_clip, prop_decrease=1.0)
+    return nr.reduce_noise(y=y_filtered, sr=sr, y_noise=noise_clip, prop_decrease=0.8)
 
 def wav_to_mp3(y, sr):
     y16 = np.int16(y / np.max(np.abs(y)) * 32767)
@@ -56,13 +56,17 @@ def convert_mp3_to_wav(mp3_file):
     wav_buf.seek(0)
     return wav_buf
 
-def compute_snr(clean, noise):
-    signal_power = np.sum(clean ** 2)
-    noise_power = np.sum(noise ** 2)
+def compute_snr_from_segments(signal, sr):
+    noise_segment = signal[:int(0.5 * sr)]
+    signal_segment = signal[int(0.5 * sr):]
+
+    signal_power = np.mean(signal_segment ** 2)
+    noise_power = np.mean(noise_segment ** 2)
+
     if noise_power == 0:
-        return float('inf')  # Perfectly clean
+        return float('inf')
     return 10 * np.log10(signal_power / noise_power)
-    return snr
+
 
 # ---------- TAB INDEX HANDLING ----------
 if "tab_index" not in st.session_state:
@@ -175,14 +179,7 @@ with tabs[2]:
                 plot_waveform(y_clean, sr, "Cleaned")
             else:
                 plot_spectrogram(y_clean, sr, "Cleaned")
-
-        noise_est = y - y_clean
-        snr_before = compute_snr(y, noise_est)
-        snr_after = compute_snr(y_clean, noise_est)
-
-        st.subheader("📊 Signal-to-Noise Ratio (SNR)")
-        st.markdown(f"**SNR Before Cleaning:** {snr_before:.2f} dB")
-        st.markdown(f"**SNR After Cleaning:** {snr_after:.2f} dB")
+        
     else:
         st.info("Please upload and process an audio file in the '🎧 AudioVive' tab first.")
 
@@ -195,11 +192,11 @@ with tabs[3]:
         sr = st.session_state["sr"]
 
         noise_est = y - y_clean
-        snr_before = compute_snr(y, noise_est)
-        snr_after = compute_snr(y_clean, noise_est)
+        snr_before = compute_snr_from_segments(y, sr)
+        snr_after = compute_snr_from_segments(y_clean, sr)
 
-        st.markdown(f"**SNR Before Cleaning:** {snr_before:.2f} dB")
-        st.markdown(f"**SNR After Cleaning:** {snr_after:.2f} dB")
+        st.markdown(f"**Signal-to-Noise-Ratio Before Cleaning:** {snr_before:.2f} dB")
+        st.markdown(f"**Signal-to-Noise-Ratio After Cleaning:** {snr_after:.2f} dB")
 
         if snr_after > snr_before:
             st.success("✅ The noise reduction process was effective.")
